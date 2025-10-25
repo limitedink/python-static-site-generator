@@ -1,32 +1,27 @@
 import unittest
 
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, LeafNode
+
 
 class TestHTMLNode(unittest.TestCase):
-    def test_eq(self):
-        node = TextNode("This is a text node", TextType.BOLD)
-        node2 = TextNode("This is a text node", TextType.BOLD)
-        self.assertEqual(node, node2)
+    def test_props_none_returns_empty(self):
+        node = HTMLNode()
+        self.assertEqual(node.props_to_html(), "")
 
-    def test_eq2(self):
-        node = TextNode("", TextType.LINK)
-        node2 = TextNode("", TextType.LINK)
-        self.assertEqual(node, node2)
+    def test_props_multiple_returns_formatted_string(self):
+        node = HTMLNode(tag="a", props={"href": "https://x.com", "target": "_blank"})
+        expected = ' href="https://x.com" target="_blank"'
+        self.assertEqual(node.props_to_html(), expected)
 
-    def test_noeq(self):
-        node = TextNode("text", TextType.PLAIN, "www.url.com")
-        node2 = TextNode("text", TextType.PLAIN, "www.url2.com")
-        self.assertNotEqual(node, node2)
+    def test_to_html_raises_not_implemented(self):
+        node = HTMLNode()
+        with self.assertRaises(NotImplementedError):
+            node.to_html()
 
-    def test_noeq2(self):
-        node = TextNode("italics", TextType.ITALIC, None)
-        node2 = TextNode("italics", TextType.ITALIC, "www.url.com")
-        self.assertNotEqual(node, node2)
+    def test_leaf_to_html_p(self):
+        node = LeafNode("p", "Hello, world!")
+        self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
 
-    def test_noeq3(self):
-        node = TextNode("same", TextType.PLAIN)
-        node2 = TextNode("same", TextType.BOLD)
-        self.assertNotEqual(node, node2)
 
 if __name__ == "__main__":
     unittest.main()
