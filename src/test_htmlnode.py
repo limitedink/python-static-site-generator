@@ -33,7 +33,7 @@ class TestHTMLNode(unittest.TestCase):
         self.assertNotEqual(raw.to_html(), tagged.to_html())
 
     def test_leaf_prop_order(self):
-        node = LeafNode("a", "Hello", {"b": "2", "a":"1"})
+        node = LeafNode("a", "Hello", {"b": "2", "a": "1"})
         rendered = node.to_html()
         self.assertNotEqual(rendered, '<a b="2" a="1">Hello</a>')
         self.assertEqual(rendered, '<a a="1" b="2">Hello</a>')
@@ -48,8 +48,24 @@ class TestHTMLNode(unittest.TestCase):
         child_node = ParentNode("span", [grandchild_node])
         parent_node = ParentNode("div", [child_node])
         self.assertEqual(
-        parent_node.to_html(),
-        "<div><span><b>grandchild</b></span></div>",)
+            parent_node.to_html(),
+            "<div><span><b>grandchild</b></span></div>",
+        )
+
+    def test_to_html_with_multiple_children(self):
+        child_node = LeafNode("span", "hello")
+        child_node2 = LeafNode("span", "hello2")
+        parent_node = ParentNode("div", [child_node, child_node2])
+        self.assertEqual(
+            parent_node.to_html(), "<div><span>hello</span><span>hello2</span></div>"
+        )
+
+    def test_to_html_with_no_children(self):
+        pass
+
+    def test_to_html_with_nested_parents(self):
+        pass
+
 
 if __name__ == "__main__":
     unittest.main()
