@@ -61,10 +61,17 @@ class TestHTMLNode(unittest.TestCase):
         )
 
     def test_to_html_with_no_children(self):
-        pass
+        parent_node = ParentNode("div", None)
+        with self.assertRaises(ValueError):
+            parent_node.to_html()
 
     def test_to_html_with_nested_parents(self):
-        pass
+        inner = LeafNode("span", "x")
+        mid = ParentNode("section", [inner])
+        outer = ParentNode("div", [mid])
+        self.assertEqual(
+            outer.to_html(), "<div><section><span>x</span></section></div>"
+        )
 
 
 if __name__ == "__main__":
