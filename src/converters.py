@@ -3,7 +3,7 @@ from htmlnode import LeafNode
 
 
 def text_node_to_html_node(node):
-    if node.text_type == TextType.TEXT:
+    if node.text_type == TextType.PLAIN:
         return LeafNode(None, node.text)
     elif node.text_type == TextType.BOLD:
         return LeafNode("b", node.text)
