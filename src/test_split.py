@@ -59,6 +59,90 @@ class TestSplitDelimiter(unittest.TestCase):
             new_nodes,
         )
 
+    def test_split_images_no_images(self):
+        node = TextNode("This is just plain text with no images.", TextType.PLAIN)
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual([node], new_nodes)
+
+    def test_split_links(self):
+        node = TextNode(
+            "This is text with a [Link to google](https://google.com) and another [Link to Netflix](https://netflix.com)",
+            TextType.PLAIN,
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with a ", TextType.PLAIN),
+                TextNode("Link to google", TextType.LINK, "https://google.com"),
+                TextNode(" and another ", TextType.PLAIN),
+                TextNode("Link to Netflix", TextType.LINK, "https://netflix.com"),
+            ],
+            new_nodes,
+        )
+
+    def test_split_links_no_links(self):
+        node = TextNode("This is text with no links at all.", TextType.PLAIN)
+        new_nodes = split_nodes_link([node])
+        self.assertListEqual([node], new_nodes)
+
+    def test_split_links_with_multiple_input_nodes(self):
+        node1 = TextNode(
+            "Text with a [first link](https://example.com/1).", TextType.PLAIN
+        )
+        node2 = TextNode("Just plain text.", TextType.PLAIN)
+        node3 = TextNode(
+            "And a [second link](https://example.com/2) here.", TextType.PLAIN
+        )
+
+        input_nodes = [node1, node2, node3]
+        new_nodes = split_nodes_link(input_nodes)
+
+        expected_nodes = [
+            TextNode("Text with a ", TextType.PLAIN),
+            TextNode("first link", TextType.LINK, "https://example.com/1"),
+            TextNode(".", TextType.PLAIN),
+            TextNode("Just plain text.", TextType.PLAIN),
+            TextNode("And a ", TextType.PLAIN),
+            TextNode("second link", TextType.LINK, "https://example.com/2"),
+            TextNode(" here.", TextType.PLAIN),
+        ]
+        self.assertListEqual(expected_nodes, new_nodes)
+
+    def test_split_links_startsends_with_link(self):
+        node = TextNode(
+            "[Start Link](https://start.com) text in middle [End Link](https://end.com)",
+            TextType.PLAIN,
+        )
+        new_nodes = split_nodes_link([node])
+        expected_nodes = [
+            TextNode("Start Link", TextType.LINK, "https://start.com"),
+            TextNode(" text in middle ", TextType.PLAIN),
+            TextNode("End Link", TextType.LINK, "https://end.com"),
+        ]
+        self.assertListEqual(expected_nodes, new_nodes)
+
+    def test_split_links_onlylink(self):
+        node = TextNode("[Only Link](https://only.com)", TextType.PLAIN)
+        new_nodes = split_nodes_link([node])
+        expected_nodes = [
+            TextNode("Only Link", TextType.LINK, "https://only.com"),
+        ]
+        self.assertListEqual(expected_nodes, new_nodes)
+
+    def test_split_links_consecutive_links(self):
+        node = TextNode(
+            "Text[Link1](https://l1.com)[Link2](https://l2.com)more text",
+            TextType.PLAIN,
+        )
+        new_nodes = split_nodes_link([node])
+        expected_nodes = [
+            TextNode("Text", TextType.PLAIN),
+            TextNode("Link1", TextType.LINK, "https://l1.com"),
+            TextNode("Link2", TextType.LINK, "https://l2.com"),
+            TextNode("more text", TextType.PLAIN),
+        ]
+        self.assertListEqual(expected_nodes, new_nodes)
+
 
 if __name__ == "__main__":
     unittest.main()
