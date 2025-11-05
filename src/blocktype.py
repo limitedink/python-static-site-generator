@@ -19,11 +19,17 @@ def block_to_block_type(mdblock):
     ul_prefix = "- "
 
     lines = mdblock.split("\n")
+    
+    if mdblock.startswith("01. ") or mdblock.startswith("1) "):
+        raise Exception("syntax error: invalid ordered list format")
+    
     if mdblock.startswith("1. "):
         for i, line in enumerate(lines):
             ol_prefix = f"{i + 1}. "
             if not line.startswith(ol_prefix):
                 raise Exception("syntax error: ordered list is not correctly ordered")
+            if line.split(".")[0] != str(i + 1):
+                raise Exception("syntax error: ordered list has incorrect format")
         return BlockType.ORDERED
 
     elif mdblock.startswith(tuple(heading_prefix)):
