@@ -99,3 +99,14 @@ def text_to_textnodes(text):
     nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
     nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
     return nodes
+
+
+def markdown_to_blocks(markdown):
+    original_blocks = markdown.split("\n\n")
+    final_blocks = []
+
+    for block in original_blocks:
+        stripped_block = block.strip()
+        if stripped_block:
+            final_blocks.append(stripped_block)
+    return final_blocks
