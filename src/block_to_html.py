@@ -27,7 +27,7 @@ def markdown_to_html_node(markdown):
                     children_list.append(node)
                     break
         elif btype == BlockType.QUOTE:
-            lines = [ln for ln in block.splitlines() if ln.strip()]  # drop blank lines
+            lines = [ln for ln in block.splitlines() if ln.strip()]
             stripped = [
                 ln.lstrip()[2:] if ln.lstrip().startswith("> ") else ln for ln in lines
             ]
@@ -40,10 +40,12 @@ def markdown_to_html_node(markdown):
             lines = block.splitlines()
             if lines and lines[0].strip() == "```" and lines[-1].strip() == "```":
                 inner_lines = lines[1:-1]
-                indents = [len(l) - len(l.lstrip(" ")) for l in inner_lines if l.strip()]
+                indents = [
+                    len(l) - len(l.lstrip(" ")) for l in inner_lines if l.strip()
+                ]
                 pad = min(indents) if indents else 0
                 dedented = [l[pad:] for l in inner_lines]
-                inner = "\n".join(dedented) + "\n"   # always add final newline for fenced blocks
+                inner = "\n".join(dedented) + "\n"
             else:
                 inner = block
             code_child = text_node_to_html_node(TextNode(inner, TextType.PLAIN))
@@ -76,7 +78,7 @@ def markdown_to_html_node(markdown):
 
         else:
             inner = " ".join(block.splitlines()).strip()
-            inner = " ".join(part.strip() for part in block.splitlines())
+            inner = " ".join(line.strip() for line in block.splitlines())
             inner = re.sub(r"\s+", " ", inner).strip()
             children = text_to_children(inner)
             node = ParentNode("p", children)
