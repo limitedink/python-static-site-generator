@@ -1,6 +1,7 @@
 from shutil import copy
 from textnode import TextNode, TextType
 from copy_static import copy_static
+from gencontent import generate_page
 
 
 def main():
@@ -8,6 +9,7 @@ def main():
     # print(T_node)
 
     copy_static("./static", "./public")
+    generate_page("content/index.md", "template.html", "public/index.html")
 
 
 if __name__ == "__main__":
