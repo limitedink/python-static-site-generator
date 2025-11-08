@@ -10,7 +10,7 @@ def main():
     # print(T_node)
     basepath = sys.argv[1] if len(sys.argv) > 1 else "/"
     copy_static("./static", "./docs")
-    generate_pages_recursive("content", "template.html", basepath)
+    generate_pages_recursive("content", "template.html", "docs", basepath)
 
 
 if __name__ == "__main__":
