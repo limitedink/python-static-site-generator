@@ -5,7 +5,9 @@ import shutil
 def copy_static(src, destination):
     if os.path.exists(destination):
         shutil.rmtree(destination)
-        os.mkdir(destination)
+
+    os.mkdir(destination)
+
     if os.path.isdir(src):
         static_files = os.listdir(src)
         for file in static_files:
