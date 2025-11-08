@@ -28,9 +28,13 @@ def markdown_to_html_node(markdown):
                     break
         elif btype == BlockType.QUOTE:
             lines = [ln for ln in block.splitlines() if ln.strip()]
-            stripped = [
-                ln.lstrip()[2:] if ln.lstrip().startswith("> ") else ln for ln in lines
-            ]
+            stripped = []
+            for ln in lines:
+                stripped_ln = ln.lstrip()
+                if stripped_ln.startswith(">"):
+                    # Remove the '>' and any leading space after it
+                    stripped_ln = stripped_ln[1:].lstrip()
+                stripped.append(stripped_ln)
             inner = " ".join(stripped).strip()
             children = text_to_children(inner)
             node = ParentNode("blockquote", children)
